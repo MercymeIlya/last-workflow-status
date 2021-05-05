@@ -1,7 +1,7 @@
 name: 'Get status of last workflow'
 description: 'Get conclusion(success, failure) of last workflow run on current branch.'
 branding:
-  icon: 'github'
+  icon: 'arrow-left'
   color: 'yellow'
 inputs:
   github_token:
