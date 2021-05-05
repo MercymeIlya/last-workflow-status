@@ -18,7 +18,7 @@ jobs:
   yor-job:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
+      - name: Get previous workflow status
         uses: mercymeilya/last-workflow-status@master
         id: last_status
         with:
