@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get previous workflow status
-        uses: mercymeilya/last-workflow-status@master
+        uses: Mercymeilya/last-workflow-status@master
         id: last_status
         with:
           - github_token: ${{ secrets.GITHUB_TOKEN }}
