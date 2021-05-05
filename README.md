@@ -31,6 +31,6 @@ jobs:
         uses: rtCamp/action-slack-notify@v2.1.3
         if: ${{ success() && steps.last_status.outputs.last_status == 'failed' }}
         env: 
-          SLACK_WEBHOOK: ${{ secrets.SLACK_NOTIFICATIONS_WEBHOOK }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_MESSAGE: 'Style check fixed now!'
 ```         
