@@ -1,0 +1,46 @@
+name: 'Get status of last workflow'
+description: 'Get conclusion(success, failure) of last workflow run on current branch.'
+branding:
+  icon: 'github'
+  color: 'yellow'
+inputs:
+  github_token:
+    description: 'A github token (secrets.GITHUB_TOKEN will suffice)'
+    required: true
+outputs:
+  last_status:
+    description: "`success|failure`"
+    value: ${{ steps.last_status.outputs.last_status }}
+runs:
+  using: "composite"
+  steps:
+    - name: Get branch name (merge)
+      if: github.event_name != 'pull_request'
+      run: |
+        echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / -)" >> $GITHUB_ENV
+        echo "Branch name: ${GITHUB_REF#refs/heads/}"
+    - name: Get branch name (pull request)
+      if: github.event_name == 'pull_request'
+      run: |
+        echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
+        echo "Branch name: ${GITHUB_HEAD_REF}"
+    - name: Get workflow id
+      run: |
+        WORKFLOW_ID=$(curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+                           --header 'content-type: application/json' \
+        https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }} | jq -r .workflow_id)
+        echo "WORKFLOW_ID=$WORKFLOW_ID" >> $GITHUB_ENV
+        echo "Workflow id: ${WORKFLOW_ID}"
+    - name: Get previous build status
+      id: last_status
+      run: |
+        last_status=$(curl --silent --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+                                    --header 'content-type: application/json' \
+        "https://api.github.com/repos/${{ github.repository }}/actions/workflows/${{ env.WORKFLOW_ID }}/runs?per_page=1&status=completed&branch=${{ env.BRANCH_NAME }}" \
+        | jq -r .workflow_runs[0].conclusion)
+        echo "Status of the previous build: $last_status"
+        if [[ $last_status == failure ]]; then
+         echo "::set-output name=last_status::failure"
+        else
+         echo "::set-output name=last_status::success"
+        fi
