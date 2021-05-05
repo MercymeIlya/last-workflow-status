@@ -5,7 +5,8 @@ branding:
   color: 'yellow'
 inputs:
   github_token:
-    description: 'A github token (secrets.GITHUB_TOKEN will suffice)'
+    description: Secret GitHub API token to use for making API requests.
+    default: ${{ github.token }}
     required: true
 outputs:
   last_status:
