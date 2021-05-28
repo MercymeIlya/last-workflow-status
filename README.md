@@ -18,7 +18,9 @@ notifications:
 
 ## Outputs:
 ### `last_status`
-* Conclusion value of last workflow. `success | failure`
+* Conclusion value of last workflow.
+
+See `https://docs.github.com/en/rest/reference/checks#create-a-check-run--parameters` conclusion parameter.
 
 ## Example usage
 
@@ -28,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get previous workflow status
-        uses: Mercymeilya/last-workflow-status@v0.2
+        uses: Mercymeilya/last-workflow-status@v0.3
         id: last_status
         with:
           - github_token: ${{ secrets.GITHUB_TOKEN }}
