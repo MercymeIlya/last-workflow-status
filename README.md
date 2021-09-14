@@ -20,7 +20,7 @@ notifications:
 ### `last_status`
 * Conclusion value of last workflow.
 
-See `https://docs.github.com/en/rest/reference/checks#create-a-check-run--parameters` conclusion parameter.
+See https://docs.github.com/en/rest/reference/checks#create-a-check-run--parameters conclusion parameter.
 
 ## Example usage
 
