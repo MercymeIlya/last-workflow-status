@@ -33,7 +33,7 @@ jobs:
         uses: Mercymeilya/last-workflow-status@v0.3
         id: last_status
         with:
-          - github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Any action
         run: slyle-check.sh
