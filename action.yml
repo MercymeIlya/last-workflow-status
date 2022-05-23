@@ -30,7 +30,7 @@ runs:
       run: |
         WORKFLOW_ID=$(curl --header 'authorization: Bearer ${{ inputs.github_token }}' \
                            --header 'content-type: application/json' \
-        https://${{GITHUB_API_URL}}/api/v3/repos/${{ github.repository }}/actions/runs/${{ github.run_id }} | jq -r .workflow_id)
+        https://${{ github.api_url }}/api/v3/repos/${{ github.repository }}/actions/runs/${{ github.run_id }} | jq -r .workflow_id)
         echo "WORKFLOW_ID=$WORKFLOW_ID" >> $GITHUB_ENV
         echo "Workflow id: ${WORKFLOW_ID}"
     - name: Get previous build status
@@ -39,7 +39,7 @@ runs:
       run: |
         last_status=$(curl --silent --header 'authorization: Bearer ${{ inputs.github_token }}' \
                                     --header 'content-type: application/json' \
-        "https://${{GITHUB_API_URL}}/api/v3/repos/${{ github.repository }}/actions/workflows/${{ env.WORKFLOW_ID }}/runs?status=completed" \
+        "https://${{ github.api_url }}/api/v3/repos/${{ github.repository }}/actions/workflows/${{ env.WORKFLOW_ID }}/runs?status=completed" \
         | jq -r .workflow_runs[0].conclusion)
 
         echo "Status of the previous build: $last_status"
