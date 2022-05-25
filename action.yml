@@ -11,36 +11,32 @@ inputs:
 outputs:
   last_status:
     description: "Conclusion of last workflow run on current branch"
-    value: ${{ steps.last_status.outputs.last_status }}
+    value: ${{ steps.set_result.outputs.last_status }}
 runs:
   using: "composite"
   steps:
-    - name: Get branch name
-      shell: bash
-      run: |
-        if [[ ${GITHUB_EVENT_NAME} == "pull_request" ]]
-        then
-           echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
-        else
-           echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / -)" >> $GITHUB_ENV
-        fi
-        echo "Branch name: ${GITHUB_HEAD_REF}"
-    - name: Get workflow id
-      shell: bash
-      run: |
-        WORKFLOW_ID=$(curl --header 'authorization: Bearer ${{ inputs.github_token }}' \
-                           --header 'content-type: application/json' \
-        ${{ github.api_url }}/repos/${{ github.repository }}/actions/runs/${{ github.run_id }} | jq -r .workflow_id)
-        echo "WORKFLOW_ID=$WORKFLOW_ID" >> $GITHUB_ENV
-        echo "Workflow id: ${WORKFLOW_ID}"
-    - name: Get previous build status
-      shell: bash
-      id: last_status
-      run: |
-        last_status=$(curl --silent --header 'authorization: Bearer ${{ inputs.github_token }}' \
-                                    --header 'content-type: application/json' \
-        "${{ github.api_url }}/repos/${{ github.repository }}/actions/workflows/${{ env.WORKFLOW_ID }}/runs?status=completed" \
-        | jq -r .workflow_runs[0].conclusion)
+    - name: Get last status
+      id: set_result
+      uses: actions/github-script@v3.1.0
+      with:
+        github-token: ${{ inputs.github_token }}
+        result-encoding: string
+        script: |
+          let workflow_id = await github.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}', {
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            run_id: ${{ github.run_id }}
+          })
+          console.log("Workflow id: " + workflow_id)
 
-        echo "Status of the previous build: $last_status"
-        echo "::set-output name=last_status::${last_status}"
+          // TODO
+          let last_status = await github.request('GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs?status=completed', {
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            workflow_id: workflow_id
+          })
+
+          console.log("Last status: " + last_status)
+
+          return last_status
+
