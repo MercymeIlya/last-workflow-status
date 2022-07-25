@@ -1,0 +1,18 @@
+---
+name: Previous workflow status check
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  previous-status-check:
+    name: Previous status check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Get previous workflow status
+        uses: Mercymeilya/last-workflow-status@v0.3.1
+        id: last_status
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}

@@ -24,7 +24,7 @@ runs:
         else
            echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / -)" >> $GITHUB_ENV
         fi
-        echo "Branch name: ${ env.BRANCH_NAME }"
+        echo "Branch name: ${ BRANCH_NAME }"
     - name: Get workflow id
       shell: bash
       run: |
