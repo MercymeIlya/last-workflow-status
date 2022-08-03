@@ -20,10 +20,10 @@ runs:
       run: |
         if [[ ${GITHUB_EVENT_NAME} == "pull_request" ]]
         then
-           echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
+           echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF})" >> $GITHUB_ENV
            echo "Branch name: ${GITHUB_HEAD_REF}"
         else
-           echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / -)" >> $GITHUB_ENV
+           echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
            echo "Branch name: ${GITHUB_REF#refs/heads/}"        
         fi
     - name: Get workflow id
