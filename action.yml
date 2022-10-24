@@ -42,5 +42,5 @@ runs:
                                     --header 'content-type: application/json' \
         "${{ github.api_url }}/repos/${{ github.repository }}/actions/workflows/${{ env.WORKFLOW_ID }}/runs?per_page=1&status=completed&branch=${{ env.BRANCH_NAME }}" \
         | jq -r .workflow_runs[0].conclusion)
-        echo "::set-output name=last_status::$last_status"
+        echo "last_status=$last_status" >> $GITHUB_OUTPUT
         echo "Status of the previous build: $last_status"
