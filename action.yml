@@ -58,5 +58,7 @@ runs:
           head -1
         )
 
+        last_status="${last_status:-null}"
+
         echo "last_status=${last_status}" >> $GITHUB_OUTPUT
         echo "Status of the previous build: ${last_status}"
